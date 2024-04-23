@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-pyproject
+
+  Powertools for AWS Lambda (Python) example
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+    Runtime: python3.12
+
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  CommonUtilLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: common-util
+      CompatibleRuntimes:
+        - python3.12
+    Metadata:
+      BuildMethod: makefile
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: hello-world
+      Description: Hello World function
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          POWERTOOLS_SERVICE_NAME: !Ref AWS::StackName
+          LOG_LEVEL: INFO
+      Layers:
+        - !Ref CommonUtilLayer
+    Metadata:
+      BuildMethod: makefile

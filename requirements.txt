@@ -1,0 +1,7 @@
+# project packages
+-e ./hello-world
+-e ./common-util
+
+# dev tools
+mypy
+ruff
